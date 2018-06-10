@@ -1,0 +1,32 @@
+OleDbCommand komanda;
+        OleDbConnection konekcija;
+        OleDbDataAdapter adapter;
+        OleDbDataReader reader;
+        DataTable tabela;
+        public frmProfesori()
+        {
+            InitializeComponent();
+            string putanja = Environment.CurrentDirectory;
+            string[] putanjaBaze = putanja.Split(new string[] { "bin" }, StringSplitOptions.None);
+            AppDomain.CurrentDomain.SetData("DataDirectory", putanjaBaze[0]);
+            konekcija = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\B25Studenti.accdb");
+        }
+        
+        private void frmProfesori_Load(object sender, EventArgs e)
+        {
+            konekcija.Open();
+            komanda = new OleDbCommand("Select * from Profesor", konekcija);
+            adapter = new OleDbDataAdapter(komanda);
+            tabela = new DataTable();
+            adapter.Fill(tabela);
+            string pom;
+            int i;
+            for (i = 0; i < tabela.Rows.Count; i++)
+            {
+                pom = tabela.Rows[i]["ProfesorID"].ToString() + " - ";
+                pom += tabela.Rows[i]["Ime"].ToString() + " ";
+                pom += tabela.Rows[i]["Prezime"].ToString();
+                listView1.Items.Add(pom);
+            }
+            konekcija.Close();
+        }
