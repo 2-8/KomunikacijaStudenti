@@ -1,0 +1,13 @@
+OleDbCommand komanda;
+        OleDbConnection konekcija;
+        OleDbDataAdapter adapter;
+        OleDbDataReader reader;
+        DataTable tabela;
+        public frmImajuMejl()
+        {
+            InitializeComponent();
+            string putanja = Environment.CurrentDirectory;
+            string[] putanjaBaze = putanja.Split(new string[] { "bin" }, StringSplitOptions.None);
+            AppDomain.CurrentDomain.SetData("DataDirectory", putanjaBaze[0]);
+            konekcija = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\B25Studenti.accdb");
+        }
