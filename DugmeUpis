@@ -1,0 +1,79 @@
+private void Upis_Click(object sender, EventArgs e)
+        {
+            string ID, ime, prezime, telefon, dr, mejl;
+            ID = tbSifra.Text;
+            ime = tbIme.Text;
+            prezime = tbPrezime.Text;
+            telefon = tbTelefon.Text;
+            dr = tbDr.Text;
+            mejl = tbMelj.Text;
+            try
+            {
+                if (tbSifra.Text == "" || tbIme.Text == "" || tbPrezime.Text == "")
+                {
+                    MessageBox.Show("Sifra, Ime i Prezime su obavezna polja!");
+                }
+                else if(tbDr.Text=="")
+                {
+                    /*string pom1;
+                    pom = tbSifra.Text + " - " + tbIme.Text + " " + tbPrezime.Text;
+                    listView1.Items.Add(pom);*/
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "insert into Profesor (ProfesorID,Ime,Prezime,Telefon,Email) values ('" + ID + "', '" + ime + "', '" + prezime + "', '" + telefon + "', '" + mejl + "')";
+                    cmd.Connection = konekcija;
+                    konekcija.Open();
+                    cmd.ExecuteNonQuery();
+                    System.Windows.Forms.MessageBox.Show("Uspesno upisano u tabelu", "Informacija", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //konekcija.Close();
+                    tbDr.Text = tbIme.Text = tbPrezime.Text = tbMelj.Text = tbTelefon.Text = tbSifra.Text = "";
+                }
+                else
+                {
+                   
+                    /*string pom;
+                    pom = tbSifra.Text + " - " + tbIme.Text + " " + tbPrezime.Text;
+                    listView1.Items.Add(pom);*/
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "insert into Profesor (ProfesorID,Ime,Prezime,DatumRodjenja,Telefon,Email) values ('" + ID + "', '" + ime + "', '" + prezime + "', '" + dr + "', '" + telefon + "', '" + mejl + "')";
+                    cmd.Connection = konekcija;
+                    konekcija.Open();
+                    cmd.ExecuteNonQuery();
+                    //konekcija.Close();
+                    System.Windows.Forms.MessageBox.Show("Uspesno upisano u tabelu", "Informacija", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tbDr.Text = tbIme.Text = tbPrezime.Text = tbMelj.Text = tbTelefon.Text = tbSifra.Text = "";
+                }
+            }
+            catch
+            {
+                konekcija.Close();
+                MessageBox.Show("Greska prilikom upisa u bazu!  Proverite da li ste uneli validne podatke u polja!");
+                DialogResult dialogResult = MessageBox.Show("Da li zelite da se polja restartuju?", "",MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    tbDr.Text = tbIme.Text = tbPrezime.Text = tbMelj.Text = tbTelefon.Text = tbSifra.Text = "";
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    tbDr.Focus();
+                }              
+            }
+            konekcija.Close();
+            listView1.Clear();
+            konekcija.Open();
+            komanda = new OleDbCommand("Select * from Profesor", konekcija);
+            adapter = new OleDbDataAdapter(komanda);
+            tabela = new DataTable();
+            adapter.Fill(tabela);
+            string pom;
+            int i;
+            for (i = 0; i < tabela.Rows.Count; i++)
+            {
+                pom = tabela.Rows[i]["ProfesorID"].ToString() + " - ";
+                pom += tabela.Rows[i]["Ime"].ToString() + " ";
+                pom += tabela.Rows[i]["Prezime"].ToString();
+                listView1.Items.Add(pom);
+            }
+            konekcija.Close();
+        }
