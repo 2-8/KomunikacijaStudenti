@@ -1,0 +1,51 @@
+private void Izmeni_Click(object sender, EventArgs e)
+        {
+            konekcija.Open();
+            string kom = "Update Profesor set [Ime] = @ime, [Prezime] = @prezime, [Email] = @email, [Telefon]=tel, [DatumRodjenja]=dr where [ProfesorID] =  @ID";
+            komanda = new OleDbCommand(kom, konekcija);
+            try
+            {
+                komanda.Parameters.AddWithValue("@ime", tbIme.Text);
+                komanda.Parameters.AddWithValue("@prezime", tbPrezime.Text);
+                komanda.Parameters.AddWithValue("@email", tbMelj.Text);
+                komanda.Parameters.AddWithValue("@tel", tbTelefon.Text);
+                komanda.Parameters.AddWithValue("@dr", tbDr.Text);
+                komanda.Parameters.AddWithValue("@ID", Convert.ToInt32(tbSifra.Text));
+                komanda.ExecuteNonQuery();
+                MessageBox.Show("Uspesno azurirano!", "Informacija", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tbDr.Text = tbIme.Text = tbPrezime.Text = tbMelj.Text = tbTelefon.Text = tbSifra.Text = "";
+
+            }
+            catch
+            {
+                konekcija.Close();
+                MessageBox.Show("Greska prilikom menjanja sadrzaja baze!  Proverite da li ste uneli validne podatke u polja!");
+                DialogResult dialogResult = MessageBox.Show("Da li zelite da se polja restartuju?", "", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    tbDr.Text = tbIme.Text = tbPrezime.Text = tbMelj.Text = tbTelefon.Text = tbSifra.Text = "";
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    tbDr.Focus();
+                }
+            }
+            konekcija.Close();
+            listView1.Clear();
+
+            konekcija.Open();
+            komanda = new OleDbCommand("Select * from Profesor", konekcija);
+            adapter = new OleDbDataAdapter(komanda);
+            tabela = new DataTable();
+            adapter.Fill(tabela);
+            string pom;
+            int i;
+            for (i = 0; i < tabela.Rows.Count; i++)
+            {
+                pom = tabela.Rows[i]["ProfesorID"].ToString() + " - ";
+                pom += tabela.Rows[i]["Ime"].ToString() + " ";
+                pom += tabela.Rows[i]["Prezime"].ToString();
+                listView1.Items.Add(pom);
+            }
+            konekcija.Close();
+        }
