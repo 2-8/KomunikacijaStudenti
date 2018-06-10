@@ -1,0 +1,13 @@
+private void Novi_Click(object sender, EventArgs e)
+        {
+            konekcija.Open();
+            komanda = new OleDbCommand("SELECT * FROM Profesor", konekcija);
+            adapter = new OleDbDataAdapter(komanda);
+            tabela = new DataTable();
+            adapter.Fill(tabela);
+            int i;
+            i = tabela.Rows.Count+1;
+            tbSifra.Text = i.ToString();
+            konekcija.Close();
+            tbDr.Text = tbIme.Text = tbPrezime.Text = tbMelj.Text = tbTelefon.Text =  "";
+        }
