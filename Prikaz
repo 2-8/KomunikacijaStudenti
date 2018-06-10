@@ -1,0 +1,34 @@
+private void prikaz_Click(object sender, EventArgs e)
+        {
+            string mesec = numericUpDown2.Value.ToString();
+            string godina = numericUpDown1.Value.ToString();
+            /*textBox1.Text = mesec;
+            textBox2.Text = godina;*/
+            konekcija.Open();
+            string komandaa = "SELECT Student.Ime, Student.Prezime, Count(Kontakt_Informacije.StudentID) AS CountOfStudentID FROM Student INNER JOIN(Profesor INNER JOIN Kontakt_Informacije ON Profesor.ProfesorID = Kontakt_Informacije.ProfesorID) ON Student.StudentID = Kontakt_Informacije.StudentID WHERE Profesor.Email IS NOT NULL AND year(Kontakt_Informacije.DatumKontakta)= @godina AND month(Kontakt_Informacije.DatumKontakta)= @mesec GROUP BY Student.Ime, Student.Prezime";
+            komanda = new OleDbCommand(komandaa, konekcija);
+            komanda.Parameters.AddWithValue("@godina", godina);
+            komanda.Parameters.AddWithValue("@mesec", mesec);
+            try
+            {
+                reader = komanda.ExecuteReader();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            while (true)
+            {
+                try
+                {
+                    reader.Read();
+                    dataGridView1.Rows.Add(reader[0], reader[1], reader[2]);
+                }
+                catch (Exception ex)
+                {
+
+                    break;
+                }
+            }
+            konekcija.Close();
+        }
