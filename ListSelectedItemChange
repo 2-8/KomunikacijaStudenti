@@ -1,0 +1,30 @@
+private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int sel = listView1.FocusedItem.Index;
+            tbSifra.Text = tabela.Rows[sel]["ProfesorID"].ToString();
+            tbIme.Text = tabela.Rows[sel]["Ime"].ToString();
+            tbPrezime.Text = tabela.Rows[sel]["Prezime"].ToString();
+            if (tabela.Rows[sel]["DatumRodjenja"].ToString() != "")
+            {
+                DateTime dr;
+                string s = tabela.Rows[sel]["DatumRodjenja"].ToString();
+                dr = Convert.ToDateTime(s);
+                tbDr.Text = dr.ToShortDateString().ToString();
+            }
+            else
+            {
+                tbDr.Text = "";
+            }
+            tbTelefon.Text = tabela.Rows[sel]["Telefon"].ToString();
+            if (tabela.Rows[sel]["Email"].ToString()!="")
+            {
+                string m = tabela.Rows[sel]["Email"].ToString();
+                int i = m.IndexOf('#');
+                string pom = m.Substring(0, i+1);
+                tbMelj.Text = pom;
+            }
+            else
+            {
+                tbMelj.Text = "";
+            }
+        }
