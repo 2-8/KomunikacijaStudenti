@@ -1,0 +1,112 @@
+        private void izmeni_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (tbMejl.Text != "")
+                {
+                    if (!tbMejl.Text.Contains('@'))
+                    {
+                        MessageBox.Show("Mejl nije ispravan");
+                        tbMejl.Text = "";
+                        return;
+                    }
+                    string[] splitter = new string[2];
+                    splitter = tbMejl.Text.Split('@');
+                    if (!(splitter[0] != "" && splitter[1] != "" && splitter.Count() == 2))
+                    {
+                        MessageBox.Show("Mejl nije ispravan!", "Greska!");
+                        tbMejl.Text = "";
+                        return;
+                    }
+                    else
+                        if (splitter[1].IndexOf('.') < 1)
+                    {
+                        MessageBox.Show("Mejl nije ispravan!", "Greska!");
+                        tbMejl.Text = "";
+                        return;
+                    }
+                }
+                    int im;
+                    string s = tbBrIndeksa.Text;
+                    im = s.IndexOf('/');
+                if (im < 0)
+                {
+                    MessageBox.Show("Indeks nije ispravan!", "Greska!");
+                    tbBrIndeksa.Text = "";
+                    return;
+                }
+                if (im >3)
+                {
+                    MessageBox.Show("Indeks nije ispravan!", "Greska!");
+                    tbBrIndeksa.Text = "";
+                    return;
+                }
+                else
+                {
+                    konekcija.Open();
+                    string update = "Update Student set [Ime] = @ime, [Prezime]=@prez, [BrojIndeksa]=@br,[DatumRodjenja]=@dr,[Adresa]=@adr,[Email]=@email,[Telefon]=@tel WHERE [StudentID]=@id";
+                    komanda = new OleDbCommand(update, konekcija);
+                    komanda.Parameters.AddWithValue("@ime", tbIme.Text);
+                    komanda.Parameters.AddWithValue("@prez", tbPrezime.Text);
+                    komanda.Parameters.AddWithValue("@br", tbBrIndeksa.Text);
+                    if (tbDr.Text != "")
+                        komanda.Parameters.AddWithValue("@dr", tbDr.Text);
+                    else
+                    {
+                        komanda.Parameters.AddWithValue("@dr", DBNull.Value);
+                    }
+                    if (tbAdresa.Text != "")
+                        komanda.Parameters.AddWithValue("@adr", tbAdresa.Text);
+                    else
+                    {
+                        komanda.Parameters.AddWithValue("@adr", DBNull.Value);
+                    }
+                    if (tbMejl.Text != "")
+                        komanda.Parameters.AddWithValue("@email", tbMejl.Text);
+                    else
+                        komanda.Parameters.AddWithValue("@email", DBNull.Value);
+                    if (tbTelefon.Text != "")
+                        komanda.Parameters.AddWithValue("@tel", tbTelefon.Text);
+                    else
+                    {
+                        komanda.Parameters.AddWithValue("@tel", DBNull.Value);
+                    }
+                    komanda.Parameters.AddWithValue("@id", Convert.ToInt32(tbSifra.Text));
+                    komanda.ExecuteNonQuery();
+                    MessageBox.Show("Uspesno updejtovano!");
+                }
+            }
+             catch
+             {
+                konekcija.Close();
+                MessageBox.Show("Greska prilikom upisa u bazu!  Proverite da li ste uneli validne podatke u polja!");
+                DialogResult dialogResult = MessageBox.Show("Da li zelite da se polja restartuju?", "", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    tbTelefon.Text = tbAdresa.Text = tbIme.Text = tbPrezime.Text = tbBrIndeksa.Text = tbDr.Text = tbMejl.Text = "";
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    tbDr.Focus();
+                }
+            }
+            konekcija.Close();
+            lvStudenti.Clear();
+
+            konekcija.Open();
+            komanda = new OleDbCommand("Select * from Student", konekcija);
+            adapter = new OleDbDataAdapter(komanda);
+            tabela = new DataTable();
+            adapter.Fill(tabela);
+            string pom;
+            int i;
+            for (i = 0; i < tabela.Rows.Count; i++)
+            {
+                pom = tabela.Rows[i]["StudentID"].ToString() + " - ";
+                pom += tabela.Rows[i]["Ime"].ToString() + " ";
+                pom += tabela.Rows[i]["Prezime"].ToString();
+                lvStudenti.Items.Add(pom);
+            }
+            konekcija.Close();
+
+        }
