@@ -1,0 +1,45 @@
+private void prikaz_Click(object sender, EventArgs e)
+        {
+            chart1.Series[0].Points.Clear();
+            dataGridView1.Rows.Clear();
+            string mesec = numericUpDown2.Value.ToString();
+            string godina = numericUpDown1.Value.ToString();
+            /*textBox1.Text = mesec;
+            textBox2.Text = godina;*/
+            konekcija.Open();
+            string komandaa = "SELECT Kontakt_Informacije.ProfesorID, Profesor.Ime, Profesor.Prezime, Count(Kontakt_Informacije.ProfesorID) FROM Profesor INNER JOIN Kontakt_Informacije ON Profesor.ProfesorID=Kontakt_Informacije.ProfesorID " +
+"WHERE year(Kontakt_Informacije.DatumKontakta)=@godina AND month(Kontakt_Informacije.DatumKontakta)=@mesec AND (Profesor.Email='' OR Profesor.Email IS NULL) " +
+"GROUP BY Kontakt_Informacije.ProfesorID, Profesor.Ime, Profesor.Prezime";
+            komanda = new OleDbCommand(komandaa, konekcija);
+            komanda.Parameters.AddWithValue("@godina", godina);
+            komanda.Parameters.AddWithValue("@mesec", mesec);
+            try
+            {
+                reader = komanda.ExecuteReader();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            if (reader.HasRows)
+            {
+                while (true)
+                {
+                    try
+                    {
+                        reader.Read();
+                        dataGridView1.Rows.Add(reader[1].ToString(), reader[2].ToString(), reader[3].ToString());
+
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        break;
+                    }
+                }
+            }
+            else
+                MessageBox.Show("Nema poklapanja!", "Obavestenje!");
+            konekcija.Close();
+        }
