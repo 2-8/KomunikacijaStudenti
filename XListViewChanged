@@ -1,0 +1,30 @@
+private void lvStudenti_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int sel = lvStudenti.FocusedItem.Index;
+            tbSifra.Text = tabela.Rows[sel]["StudentID"].ToString();
+            tbIme.Text = tabela.Rows[sel]["Ime"].ToString();
+            tbPrezime.Text = tabela.Rows[sel]["Prezime"].ToString();
+            if (tabela.Rows[sel]["DatumRodjenja"].ToString() != "")
+            {
+                DateTime dr;
+                string s = tabela.Rows[sel]["DatumRodjenja"].ToString();
+                dr = Convert.ToDateTime(s);
+                tbDr.Text = dr.ToShortDateString().ToString();
+            }
+            else
+            {
+                tbDr.Text = "";
+            }
+            tbTelefon.Text = tabela.Rows[sel]["Telefon"].ToString();
+            if (tabela.Rows[sel]["Email"].ToString() != "")
+            {
+                string m = tabela.Rows[sel]["Email"].ToString();
+                tbMejl.Text = m;
+            }
+            else
+            {
+                tbMejl.Text = "";
+            }
+            tbAdresa.Text = tabela.Rows[sel]["Adresa"].ToString();
+            tbBrIndeksa.Text = tabela.Rows[sel]["BrojIndeksa"].ToString();
+        }
