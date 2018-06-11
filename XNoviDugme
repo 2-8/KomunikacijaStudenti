@@ -1,0 +1,21 @@
+        private void novi_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                konekcija.Open();
+                komanda = new OleDbCommand("SELECT * FROM Student", konekcija);
+                adapter = new OleDbDataAdapter(komanda);
+                tabela = new DataTable();
+                adapter.Fill(tabela);
+                int i;
+                i = tabela.Rows.Count + 1;
+                tbSifra.Text = i.ToString();
+                konekcija.Close();
+                tbAdresa.Text = tbBrIndeksa.Text = tbDr.Text = tbIme.Text = tbPrezime.Text = tbTelefon.Text = tbMejl.Text = "";
+
+            }
+            catch
+            {
+                MessageBox.Show("Greska!");
+            }
+        }
