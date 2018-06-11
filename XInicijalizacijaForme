@@ -1,0 +1,37 @@
+ OleDbCommand komanda;
+        OleDbConnection konekcija;
+        DataTable tabela = new DataTable();
+        OleDbDataAdapter adapter;
+        OleDbDataReader reader;
+        public frmStudenti()
+        {
+            InitializeComponent();
+            string putanja = Environment.CurrentDirectory;
+            string[] putanjaBaze = putanja.Split(new string[] { "bin" }, StringSplitOptions.None);
+            AppDomain.CurrentDomain.SetData("DataDirectory", putanjaBaze[0]);
+            konekcija = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\B25Studenti.accdb");
+        }
+
+        private void frmStudenti_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                konekcija.Open();
+                komanda = new OleDbCommand("SELECT * FROM Student", konekcija);
+                adapter = new OleDbDataAdapter(komanda);
+                adapter.Fill(tabela);
+                string pom;
+                for (int i = 0; i < tabela.Rows.Count; i++)
+                {
+                    pom = tabela.Rows[i]["StudentID"].ToString() + " -";
+                    pom += tabela.Rows[i]["Ime"].ToString() + " ";
+                    pom += tabela.Rows[i]["Prezime"].ToString();
+                    lvStudenti.Items.Add(pom);
+                }
+                konekcija.Close();
+            }
+            catch
+            {
+                MessageBox.Show("Greska!");
+            }
+        }
