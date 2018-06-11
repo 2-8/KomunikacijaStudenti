@@ -1,0 +1,92 @@
+private void upisi_Click(object sender, EventArgs e)
+        {
+            string ID, ime, prez, adresa, telefon, brindeksa, dr, mail;
+            ID = tbSifra.Text;
+            ime = tbIme.Text;
+            prez = tbPrezime.Text;
+            adresa = tbAdresa.Text;
+            telefon = tbTelefon.Text;
+            brindeksa = tbBrIndeksa.Text;
+            dr = tbDr.Text;
+            mail = tbMejl.Text;
+            int im;
+            string s = tbBrIndeksa.Text;
+            im = s.IndexOf('/');
+            if (tbIme.Text == "" || tbPrezime.Text=="" || tbBrIndeksa.Text=="")
+            {
+                MessageBox.Show("Polja ime, prezime i broj indeksa su obavezna!");
+            }
+                else if (im < 0)
+                {
+                    MessageBox.Show("Indeks nije ispravan!", "Greska!");
+                    tbBrIndeksa.Text = "";
+                    tbBrIndeksa.Focus();
+                    return;
+                }
+               else if (im > 3)
+                {
+                    MessageBox.Show("Indeks nije ispravan!", "Greska!");
+                    tbBrIndeksa.Text = "";
+                    tbBrIndeksa.Focus();
+                    return;
+                }
+            
+
+            else
+            {
+                if(tbDr.Text=="")
+                {
+
+                    string cmd = "INSERT INTO Student(StudentID,Ime,Prezime,BrojIndeksa,Adresa,Email,Telefon) VALUES ('" + ID + "', '" + ime + "', '" + prez + "', '" + brindeksa + "', '" + adresa + "', '" + mail + "', '" + telefon + "')";
+                    komanda = new OleDbCommand(cmd, konekcija);
+                    try
+                    {
+                        konekcija.Open();
+                        komanda.ExecuteNonQuery();
+                        MessageBox.Show("Uspesno upisano u tabelu!");
+                        konekcija.Close();
+                    }
+                    catch
+                    {
+                        konekcija.Close();
+                        MessageBox.Show("Greska prilikom upisa u bazu, proverite da li su svi podaci pravilno napisani!");
+                    }
+                    konekcija.Close();
+                }
+                else
+                {
+
+                    string cmd = "INSERT INTO Student(StudentID,Ime,Prezime,BrojIndeksa,DatumRodjenja,Adresa,Email,Telefon) VALUES ('" + ID + "', '" + ime + "', '" + prez + "', '" + brindeksa + "', '" + dr + "', '" + adresa + "', '" + mail + "', '" + telefon + "')";
+                    komanda = new OleDbCommand(cmd, konekcija);
+                    try
+                    {
+                        konekcija.Open();
+                        komanda.ExecuteNonQuery();
+                        MessageBox.Show("Uspesno upisano u tabelu!");
+                        konekcija.Close();
+                    }
+                    catch
+                    {
+                        konekcija.Close();
+                        MessageBox.Show("Greska prilikom upisa u bazu, proverite da li su svi podaci pravilno napisani!");
+                    }
+                    konekcija.Close();
+                }
+            }
+            lvStudenti.Clear();
+            konekcija.Open();
+            komanda = new OleDbCommand("Select * from Student", konekcija);
+            adapter = new OleDbDataAdapter(komanda);
+            tabela = new DataTable();
+            adapter.Fill(tabela);
+            string pom;
+            int i;
+            for (i = 0; i < tabela.Rows.Count; i++)
+            {
+                pom = tabela.Rows[i]["StudentID"].ToString() + " - ";
+                pom += tabela.Rows[i]["Ime"].ToString() + " ";
+                pom += tabela.Rows[i]["Prezime"].ToString();
+                lvStudenti.Items.Add(pom);
+            }
+            konekcija.Close();
+        }
